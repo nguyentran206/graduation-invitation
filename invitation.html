@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graduation Invitation</title>
+    <!-- Nhúng Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Nhúng Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Asap:ital,wght@0,400;0,600;0,700;1,400&family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Faustina:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vintage: {
+                            bg: '#fbf8f1',
+                            text: '#7e4a4e', // Màu hồng đất/đỏ bã trầu
+                            accent: '#e6c8c4', // Hồng nhạt
+                            border: '#d4bda4'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        cinzel: ['"Cinzel"', 'serif'],
+                        cursive: ['"Great Vibes"', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Pattern nền vintage ren/hoa văn nhẹ */
+        body {
+            background-color: #fbf8f1;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e6c8c4' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            overflow: hidden; /* Ẩn cuộn khi chưa mở phong bì */
+            transition: overflow 0.5s ease;
+        }
+        
+        body.opened {
+            overflow-y: auto;
+        }
+
+        /* --- Envelope Animations --- */
+        #envelope-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            background-color: rgba(251, 248, 241, 0.9);
+            backdrop-filter: blur(5px);
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        .envelope {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            background: #e6c8c4;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .envelope:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Mặt trước phong bì */
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid #dcb7b2;
+            border-right: 160px solid #dcb7b2;
+            border-bottom: 110px solid #d2a9a4;
+            border-top: 110px solid transparent;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        /* Nắp phong bì */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 120px solid #eebfb9;
+            z-index: 4;
+            transform-origin: top;
+            transition: transform 0.8s ease-in-out;
+            pointer-events: none;
+        }
+
+        /* Thư bên trong phong bì (thu nhỏ) */
+        .envelope-letter {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 300px;
+            height: 200px;
+            background: #fff;
+            z-index: 2;
+            transition: transform 1.2s ease-in-out 0.4s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #eee;
+            color: #7e4a4e;
+            font-family: "Playfair Display", serif;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .envelope-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            color: #7e4a4e;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: rgba(255,255,255,0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #7e4a4e;
+            text-align: center;
+            white-space: nowrap;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        /* Hiệu ứng khi nhấn mở */
+        .envelope.open .envelope-text {
+            opacity: 0;
+        }
+        
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 1;
+        }
+
+        .envelope.open .envelope-letter {
+            transform: translateY(-150px);
+            z-index: 5;
+        }
+
+        /* --- Main Card Layout --- */
+        #main-card {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(30px);
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+        }
+
+        #main-card.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .floral-corner {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23e6c8c4"><path d="M50 0 Q60 40 100 50 Q60 60 50 100 Q40 60 0 50 Q40 40 50 0 Z"/></svg>');
+            background-size: cover;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .top-left { top: -20px; left: -20px; transform: rotate(-45deg); }
+        .bottom-right { bottom: -20px; right: -20px; transform: rotate(135deg); }
+
+        /* Khung ảnh răng cưa vintage */
+        /* .photo-frame {
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+        } */
+        /* Khung ảnh răng cưa */
+        /* Lớp vỏ ngoài để tạo bóng mờ cho toàn bộ khung răng cưa */
+        .photo-frame-wrapper {
+             position: relative;
+             display: inline-block;
+             filter: drop-shadow(0 6px 15px rgba(0,0,0,0.2));
+             margin-top: 15px; /* Để ghim có khoảng trống ở trên */
+        }
+
+        /* Khung ảnh răng cưa chuẩn hiệu ứng tem thư */
+/* Lớp vỏ ngoài cùng (chứa ảnh và kẹp ghim) */
+        .photo-frame-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-top: 15px;
+            margin-left: 10px; /* Chừa chỗ cho ghim */
+            padding: 10px; 
+        }
+
+        /* Khung ảnh Polaroid phẳng, không răng cưa */
+        .photo-frame-vintage {
+            position: relative;
+            padding: 10px; /* Viền nhỏ xung quanh */
+            padding-bottom: 35px; /* Lề dưới rộng hơn giống Polaroid */
+            background-color: #fdfaf6; /* Màu trắng ngà rất nhạt */
+            border: 1px solid #e8e3d5; /* Viền mỏng mờ */
+            border-radius: 3px; /* Bo góc cực nhẹ */
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15); /* Đổ bóng mềm mại cho cả khung */
+        }
+
+        /* Lớp viền mỏng bao sát bức ảnh */
+        .photo-inner-border {
+            border: 1px solid rgba(126, 74, 78, 0.2);
+            padding: 2px;
+            background: #fff;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Chiếc kẹp ghim trang trí (Đã dời xuống và qua trái) */
+        .vintage-pin {
+            position: absolute;
+            top: 8px; /* Tăng số này lên để ghim xích xuống (cũ là 2px) */
+            left: 3px; /* Số âm càng lớn thì ghim càng dịch qua trái (cũ là -2px) */
+            width: 30px; 
+            height: 3px; 
+            background: linear-gradient(90deg, #d4a5a5, #fff, #a3a3a3);
+            border-radius: 3px;
+            transform: rotate(35deg); 
+            box-shadow: 2px 2px 4px rgba(0,0,0,0.25);
+            z-index: 10;
+        }
+        
+        /* Đầu tròn của kẹp ghim (Đã thu nhỏ) */
+        .vintage-pin::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: -3px;
+            width: 10px; /* Thu nhỏ đường kính */
+            height: 10px;
+            background: radial-gradient(circle at 30% 30%, #f4e8e8, #7e4a4e);
+            border-radius: 50%;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        /* Hiệu ứng viền nổi cho text */
+        .text-shadow-light {
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #7e4a4e, transparent);
+            width: 60%;
+            margin: 1.5rem auto;
+            opacity: 0.3;
+        }
+
+        /* Hiệu ứng lấp lánh nhẹ nhàng cho họa tiết bling */
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.25; transform: scale(0.85) rotate(0deg); }
+            50% { opacity: 0.85; transform: scale(1.15) rotate(15deg); }
+        }
+
+        .bling-star {
+            position: absolute;
+            fill: #b8868c; /* Màu hồng đất phớt ánh kim vintage */
+            pointer-events: none;
+            z-index: 5;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        /* Delay xen kẽ để các ngôi sao không nháy cùng lúc */
+        .bling-1 { top: 12%; left: 16px; animation-delay: 0s; }
+        .bling-2 { top: 38%; right: 18px; animation-delay: 1.2s; }
+        .bling-3 { top: 62%; left: 20px; animation-delay: 2.1s; }
+        .bling-4 { top: 84%; right: 16px; animation-delay: 0.7s; }
+        .bling-5 { top: 6%; right: 28px; animation-delay: 1.8s; }
+        .bling-6 { bottom: 5%; left: 24px; animation-delay: 2.5s; }
+    </style>
+</head>
+<body class="text-vintage-text font-serif relative">
+
+    <!-- Lớp phong bì tương tác -->
+    <div id="envelope-wrapper">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-letter">
+                <span class="font-cursive text-2xl">Invitation</span>
+            </div>
+            <div class="envelope-front"></div>
+            <div class="envelope-text animate-pulse flex flex-col items-center justify-center gap-1.5 text-center" style="font-family: 'Asap';">
+                <span>Click to open</span> 
+                <!-- Đã chỉnh màu và size -->
+                <svg width="13px" height="13px" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#7e4a4e" d="M24.2207,11.0107c2.5737,0,4.668,2.0928,4.668,4.6641c0,0.6138,0.4965,1.1113,1.1108,1.1113 c0.6143,0,1.1113-0.4975,1.1113-1.1113c0-2.5713,2.0928-4.6641,4.666-4.6641c2.5733,0,4.6661,2.0928,4.6661,4.6641 c0,1.2969-0.5313,2.5068-1.4961,3.4067c-0.0508,0.0469-0.0957,0.0977-0.1358,0.1519l-8.8115,8.8101l-8.8086-8.8077 c-0.0391-0.0537-0.0845-0.104-0.1343-0.1504c-0.9677-0.9033-1.5019-2.1142-1.5019-3.4106 C19.5547,13.1035,21.6479,11.0107,24.2207,11.0107z"></path>
+                    <path fill="#7e4a4e" d="M29.9995,30.7261c-0.2842,0-0.5684-0.1089-0.7856-0.3257l-9.7144-9.7139 c-0.0327-0.0327-0.063-0.0669-0.0913-0.1025c-1.3399-1.3145-2.0757-3.0503-2.0757-4.9092c0-3.7969,3.0903-6.8862,6.8882-6.8862 c2.4175,0,4.5483,1.251,5.7788,3.1396c1.2295-1.8886,3.3594-3.1396,5.7773-3.1396c3.7989,0,6.8887,3.0893,6.8887,6.8862 c0,1.8599-0.7344,3.5952-2.0713,4.9063c-0.0283,0.0371-0.0595,0.0722-0.0937,0.1054l-9.7154,9.7139 C30.5679,30.6172,30.2837,30.7261,29.9995,30.7261L29.9995,30.7261z M21.1909,19.2358l8.8086,8.8077l8.8105-8.8101 c0.0411-0.0542,0.087-0.105,0.1368-0.1519c0.9648-0.8999,1.4961-2.1098,1.4961-3.4067c0-2.5713-2.0928-4.6641-4.6661-4.6641 c-2.5732,0-4.666,2.0928-4.666,4.6641c0,0.6138-0.497,1.1113-1.1113,1.1113c-0.6143,0-1.1108-0.4975-1.1108-1.1113 c0-2.5713-2.0943-4.6641-4.668-4.6641c-2.5728,0-4.666,2.0928-4.666,4.6641c0,1.2964,0.5342,2.5073,1.5019,3.4106 C21.1064,19.1318,21.1518,19.1821,21.1909,19.2358L21.1909,19.2358z"></path>
+                    <polygon fill="#7e4a4e" points="57.2515,58.8174 38.9253,36.4512 40.644,35.042 58.9702,57.4082 57.2515,58.8174 "></polygon>
+                    <polygon fill="#7e4a4e" points="29.9995,43.8301 0.5205,25.3486 1.7012,23.4663 29.9995,41.2061 58.2983,23.4663 59.478,25.3486 29.9995,43.8301 "></polygon>
+                    <polygon fill="#7e4a4e" points="59.9995,60 0,60 0,23.6685 10.311,19.3462 11.1704,21.396 2.2222,25.1465 2.2222,57.7773 57.7768,57.7773 57.7768,25.1465 48.8276,21.396 49.687,19.3462 59.9995,23.6685 59.9995,60 "></polygon>
+                    <polygon fill="#7e4a4e" points="50.6811,30 48.4585,30 48.4585,2.2227 11.5405,2.2227 11.5405,30 9.3183,30 9.3183,0 50.6811,0 50.6811,30 "></polygon>
+                    <polygon fill="#7e4a4e" points="2.9023,58.8174 1.1836,57.4082 19.5112,35.042 21.23,36.4512 2.9023,58.8174 "></polygon>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nội dung thiệp chính -->
+    <div id="main-card" class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div class="max-w-2xl w-full bg-white/80 backdrop-blur-sm shadow-2xl rounded-sm p-8 sm:p-12 relative overflow-hidden border border-vintage-border">
+            
+            <!-- Họa tiết hoa văn góc -->
+            <div class="floral-corner top-left"></div>
+            <div class="floral-corner bottom-right"></div>
+
+            <!-- CÁC ĐIỂM BLING LẤP LÁNH NHẸ DỌC THEO KHUNG THIỆP -->
+            <!-- Ngôi sao 4 cánh bên trái trên -->
+            <svg class="bling-star bling-1 w-3.5 h-3.5" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <!-- Chấm sáng nhỏ góc phải trên -->
+            <svg class="bling-star bling-5 w-2.5 h-2.5 opacity-70" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <!-- Ngôi sao bên mép phải (khu vực ảnh polaroid) -->
+            <svg class="bling-star bling-2 w-4 h-4" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <!-- Ngôi sao nhỏ mép trái (khu vực ngày giờ / lời mời) -->
+            <svg class="bling-star bling-3 w-3 h-3" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <!-- Ngôi sao bên mép phải (khu vực bản đồ) -->
+            <svg class="bling-star bling-4 w-3.5 h-3.5" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <!-- Chấm sáng nhỏ ở mép dưới bên trái -->
+            <svg class="bling-star bling-6 w-2.5 h-2.5 opacity-60" viewBox="0 0 24 24">
+                <path d="M12 0 C12 7, 7 12, 0 12 C7 12, 12 17, 12 24 C12 17, 17 12, 24 12 C17 12, 12 7, 12 0 Z"/>
+            </svg>
+
+            <div class="relative z-10 text-center">
+                
+                <!-- Tiêu đề -->
+                <p class="text-sm tracking-[0.2em] uppercase mb-2" style="font-family: 'Asap', sans-serif;">Please join us for a</p>
+                <h1 class="font-cinzel text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-vintage-text leading-tight drop-shadow-sm" style="font-family: 'Faustina';">
+                    Graduation<br>Invitation
+                </h1>
+
+                <!-- Hình ảnh cá nhân (Khung Polaroid + Ghim Nhỏ) -->
+                <div class="flex justify-center my-10 relative">
+                    <div class="photo-frame-wrapper transform rotate-2 hover:rotate-0 transition-transform duration-500 max-w-[280px]">
+                        <div class="photo-frame-vintage">
+                            <!-- Lớp viền mỏng bên trong -->
+                            <div class="photo-inner-border">
+                                <img src="IMG_4050.JPG" alt="Graduate Portrait" class="w-full h-auto object-cover rounded-[1px]">
+                            </div>
+                        </div>
+                        <!-- Chiếc kẹp ghim -->
+                        <div class="vintage-pin"></div>
+                    </div>
+                </div>
+                
+                <!-- Thông tin trường -->
+                <h2 class="text-2xl sm:text-3xl font-bold mb-1 mt-6 text-shadow-light" style="font-family: 'Asap', sans-serif;">Ton Duc Thang University</h2>
+                <p class="text-sm sm:text-base italic mb-6" style="font-family: 'Asap', sans-serif;">Đại học Tôn Đức Thắng</p>
+
+                <div class="divider"></div>
+
+                <!-- Thời gian -->
+                <div class="my-6">
+                    <div class="flex justify-center items-center gap-4 text-3xl sm:text-4xl font-bold text-vintage-text font-cinzel tracking-wider">
+                        <span style="font-family: 'Faustina';">17</span>
+                        <span class="text-vintage-accent text-4xl font-light">|</span>
+                        <span style="font-family: 'Faustina';">10</span>
+                        <span class="text-vintage-accent text-4xl font-light">|</span>
+                        <span style="font-family: 'Faustina';">2026</span>
+                    </div>
+                    <p class="mt-3 text-xl font-semibold tracking-widest" style="font-family: 'Faustina';">16:00 - 16:30</p>
+                </div>
+
+                <!-- Lời mời -->
+                <p class="mt-8 mb-6 text-sm sm:text-base leading-relaxed px-4 sm:px-12 text-justify md:text-center" style="font-family: 'Asap';">
+                    Ngày tốt nghiệp của mình sẽ trọn vẹn hơn khi có sự hiện diện của bạn. <br><br>
+                    Xin trân trọng kính mời bạn đến chung vui và cùng mình lưu giữ lại những kỷ niệm đáng nhớ vào ngày đặc biệt này!
+                </p>
+                
+                <div class="divider"></div>
+
+                <!-- Lời cảm ơn -->
+                <h3 class="font-cursive text-5xl sm:text-6xl text-vintage-text mt-8 mb-10 transform -rotate-2">
+                    Thank you!
+                </h3>
+
+                <!-- KHUNG ẢNH SƠ ĐỒ NGÔI TRƯỜNG -->
+                <div class="mt-12 flex flex-col items-center">
+                    <h4 class="font-bold text-lg uppercase tracking-widest mb-4 font-cinzel text-vintage-text" style="font-family: 'Asap';">Sơ đồ khuôn viên trường</h4>
+                    <div class="bg-white p-2 box-shadow-sm rounded-md border border-[#e8e3d5] w-full max-w-lg">
+                        <img src="TDT_2D.png" alt="Sơ đồ ngôi trường" onclick="openModal(this.src)" title="Click để phóng to" class="w-full h-auto object-cover rounded-sm border border-vintage-accent/50 cursor-zoom-in hover:opacity-90 hover:shadow-lg transition-all duration-300">
+
+                        <!-- NÚT LINK ĐẾN MAP 2D -->
+                        <div class="text-center mt-4 mb-2" style="font-family: 'Asap';">
+                            <a href="https://discovery.tdtu.edu.vn/" target="_blank" 
+                            class="inline-flex items-center gap-1.5 px-4 py-1.5 border border-vintage-text text-vintage-text hover:bg-[#e8c5c8] hover:text-[#7e4a4e] hover:border-[#e8c5c8] transition-all duration-300 text-[10px] sm:text-xs font-cinzel tracking-wider rounded-sm" 
+                            style="font-family: 'Asap';">
+                                <!-- Đã chỉnh lại w-3.5 h-3.5 để cân đối với cỡ chữ mới -->
+                                <svg viewBox="0 0 1024 1024" class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M633.8176 637.44l60.6464-60.6336 108.608 108.608-60.6464 60.6336z" fill="#7e4a4e"></path>
+                                    <path d="M742.4 764.16l-126.72-126.72 79.36-79.36 126.72 126.72-79.36 79.36z m-90.88-126.72l90.88 90.88 42.24-42.24-90.88-90.88-42.24 42.24z" fill="#7e4a4e"></path>
+                                    <path d="M942.08 785.92c29.44 29.44-1.28 55.04-28.16 81.92-26.88 26.88-38.4 43.52-67.84 14.08l-111.36-108.8c-29.44-29.44-30.72-74.24-3.84-99.84 26.88-26.88 71.68-24.32 99.84 3.84l111.36 108.8z" fill="#7e4a4e"></path>
+                                    <path d="M872.96 910.08c-11.52 0-23.04-6.4-35.84-19.2l-111.36-108.8c-16.64-16.64-25.6-37.12-26.88-60.16-1.28-23.04 6.4-43.52 23.04-58.88S759.04 640 780.8 640c21.76 1.28 43.52 10.24 60.16 26.88l111.36 108.8c10.24 10.24 15.36 21.76 15.36 33.28 0 23.04-19.2 42.24-38.4 61.44l-10.24 10.24c-16.64 16.64-29.44 29.44-46.08 29.44z m-96-243.2c-14.08 0-26.88 5.12-37.12 15.36-10.24 10.24-15.36 24.32-15.36 39.68 1.28 15.36 7.68 30.72 19.2 42.24l111.36 108.8c7.68 7.68 14.08 11.52 17.92 11.52 6.4 0 15.36-8.96 26.88-20.48l10.24-10.24c15.36-15.36 30.72-30.72 30.72-43.52 0-5.12-2.56-10.24-7.68-15.36l-111.36-108.8c-11.52-11.52-26.88-19.2-42.24-19.2h-2.56z" fill="#7e4a4e"></path>
+                                    <path d="M454.4 410.88m-294.4 0a294.4 294.4 0 1 0 588.8 0 294.4 294.4 0 1 0-588.8 0Z" fill="#7e4a4e"></path>
+                                    <path d="M454.4 718.08c-168.96 0-307.2-138.24-307.2-307.2s138.24-307.2 307.2-307.2 307.2 138.24 307.2 307.2-138.24 307.2-307.2 307.2z m0-588.8c-154.88 0-281.6 126.72-281.6 281.6s126.72 281.6 281.6 281.6 281.6-126.72 281.6-281.6-126.72-281.6-281.6-281.6z" fill="#7e4a4e"></path>
+                                    <path d="M454.4 410.88m-217.6 0a217.6 217.6 0 1 0 435.2 0 217.6 217.6 0 1 0-435.2 0Z" fill="#faf7f0"></path>
+                                    <path d="M454.4 641.28c-126.72 0-230.4-103.68-230.4-229.12s103.68-230.4 230.4-230.4 229.12 103.68 229.12 230.4-102.4 229.12-229.12 229.12z m0-433.92c-112.64 0-204.8 92.16-204.8 204.8s92.16 203.52 204.8 203.52 203.52-92.16 203.52-203.52-90.88-204.8-203.52-204.8z" fill="#7e4a4e"></path>
+                                </svg>
+                                <span>Xem bản đồ 2D</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thông tin địa điểm & Bản đồ -->
+                <div class="mt-12 bg-vintage-accent/10 p-6 rounded-xl border border-vintage-border/50 text-center"> <!-- Sửa text-left thành text-center -->
+                    <h4 class="font-bold text-lg uppercase tracking-widest mb-4 font-cinzel" style="font-family: 'Asap';">Địa chỉ</h4>
+                    
+                    <!-- SVG Location căn giữa -->
+                    <p class="mb-4 text-sm flex items-center justify-center gap-2"> <!-- Đổi items-start thành items-center và thêm justify-center -->
+                        <svg fill="#7e4a4e" class="w-4 h-4 flex-shrink-0" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M255.991,213.339c35.355,0,64-28.645,64-64s-28.645-64-64-64s-64,28.645-64,64S220.636,213.339,255.991,213.339z M255.991,128.006c11.791,0,21.333,9.542,21.333,21.333s-9.542,21.333-21.333,21.333c-11.791,0-21.333-9.542-21.333-21.333 S244.2,128.006,255.991,128.006z"></path> 
+                            <path d="M228.229,397.518l8.681,17.362c7.863,15.726,30.305,15.723,38.164-0.004l18.389-36.8 c18.466-36.902,35.939-66.021,75.763-128.619l1.036-1.629c5.852-9.199,8.681-13.651,12.042-18.961 c14.956-23.623,23.02-50.992,23.02-79.527c0-89.032-77.35-158.521-166.786-148.343c-66.548,7.591-121.188,60.835-130.398,127.125 c-5.511,39.683,4.604,78.394,27.526,109.517C166.5,279.435,190.243,321.574,228.229,397.518z M150.402,133.992 c6.528-46.989,45.76-85.218,92.967-90.603c64.055-7.29,119.289,42.33,119.289,105.951c0,20.39-5.735,39.855-16.403,56.706 c-3.34,5.276-6.155,9.708-11.991,18.88l-1.036,1.629c-40.148,63.109-58.184,93.122-77.28,131.152 c-33.196-65.363-56.271-105.169-85.935-145.383C153.636,190.087,146.437,162.538,150.402,133.992z"></path> 
+                            <path d="M388.88,313.04c-11.464-2.719-22.961,4.371-25.68,15.835c-2.719,11.464,4.371,22.962,15.835,25.68 c57.212,13.567,90.298,35.274,90.298,50.773c0,29.478-94.949,64-213.333,64c-118.398,0-213.333-34.518-213.333-64 c0-15.508,33.053-37.209,90.236-50.773c11.464-2.719,18.553-14.217,15.834-25.681c-2.719-11.464-14.217-18.553-25.681-15.833 C48.205,330.796,0,362.445,0,405.329c0,64.804,115.134,106.667,256,106.667c140.853,0,256-41.865,256-106.667 C512,362.444,463.765,330.798,388.88,313.04z"></path> 
+                        </svg>
+                        <span style="font-family: 'Asap';">19 Nguyễn Hữu Thọ, Phường Tân Hưng, Quận 7, TP. HCM</span>
+                    </p>
+                    
+                    <!-- SVG Phone căn giữa -->
+                    <p class="mb-4 text-sm font-bold flex items-center justify-center gap-2" style="font-family: 'Asap';"> <!-- Thêm justify-center -->
+                        <svg class="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#7e4a4e">
+                            <path d="M21,15v3.93a2,2,0,0,1-2.29,2A18,18,0,0,1,3.14,5.29,2,2,0,0,1,5.13,3H9a1,1,0,0,1,1,.89,10.74,10.74,0,0,0,1,3.78,1,1,0,0,1-.42,1.26l-.86.49a1,1,0,0,0-.33,1.46,14.08,14.08,0,0,0,3.69,3.69,1,1,0,0,0,1.46-.33l.49-.86A1,1,0,0,1,16.33,13a10.74,10.74,0,0,0,3.78,1A1,1,0,0,1,21,15Z"></path>
+                        </svg>
+                        0354 151 057
+                    </p>
+                    
+                    <!-- Hướng dẫn di chuyển & Gửi xe -->
+                    <div class="text-sm bg-white/70 p-4 rounded border border-vintage-border/30 shadow-sm text-left"> <!-- Giữ nguyên text-left cho danh sách dễ đọc -->
+                        <h5 class="font-bold font-cinzel mb-2 flex items-center justify-center gap-2" style="font-family: 'Asap';"> <!-- Căn giữa Tiêu đề Hướng dẫn -->
+                            <!-- SVG Car mượt mà, đơn màu -->
+                            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#7e4a4e">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM19 17H5v-5h14v5z"></path>
+                                <circle cx="7.5" cy="14.5" r="1.5"></circle>
+                                <circle cx="16.5" cy="14.5" r="1.5"></circle>
+                            </svg>
+                            Hướng dẫn di chuyển và Gửi xe:
+                        </h5>
+                        <ul class="list-disc pl-5 space-y-2 text-vintage-text/90 italic mt-3" style="font-family: 'Asap';">
+                            <li>Nếu đi <strong>xe công nghệ</strong>: Đặt điểm đến là <strong>Cổng 1</strong> hoặc <strong>Cổng 2</strong> (đối diện mặt đường Nguyễn Hữu Thọ).</li>
+                            <li>Nếu đi <strong>xe máy</strong>: Vui lòng đi vào <strong>Cổng 7</strong> hoặc <strong>Cổng 9</strong> (đường D6) để gửi xe.</li>
+                            <li><strong>Khu vực tập trung:</strong> Phía trước khu vực các tòa nhà <strong>A, B, C</strong>.</li>
+                        </ul>
+                    </div>
+
+                    <div class="w-full h-64 rounded-lg overflow-hidden shadow-inner relative mt-6">
+                        <!-- Google Maps Embed -->
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3296.3416318691043!2d106.69713388094156!3d10.73194420713661!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528b2747a81a3%3A0x33c1813055acb613!2zxJDhuqFpIGjhu41jIFTDtG4gxJDhu6ljIFRo4bqvbmc!5e0!3m2!1svi!2s!4v1791979075282!5m2!1svi!2s"
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="absolute top-0 left-0">
+                        </iframe>
+                    </div>
+
+                    <!-- PHẦN LƯU Ý QUAN TRỌNG -->
+                    <div class="mt-6 border-t border-vintage-border/50 pt-5 text-left"> <!-- Giữ text-left để Note dễ đọc -->
+                        <div class="flex items-start gap-3 bg-white/60 p-4 rounded-md border border-vintage-accent/40 shadow-sm">
+                            <!-- SVG Note -->
+                            <span class="flex-shrink-0 mt-0.5">
+                                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="#7e4a4e" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+                                </svg>
+                            </span>
+                            <div>
+                                <h5 class="font-bold text-sm font-cinzel text-vintage-text mb-1 tracking-wider" style="font-family: 'Asap';">Lưu ý</h5>
+                                <p class="text-xs sm:text-sm italic text-vintage-text/90 leading-relaxed" style="font-family: 'Asap';">
+                                    Do ngày lễ tốt nghiệp đông người, đường đi có thể kẹt xe và khu vực trường thường bị chặn sóng điện thoại (3G/4G). Mọi người nhớ <strong>chụp màn hình lưu lại sơ đồ và thông tin liên hệ</strong> từ ở nhà để phòng hờ trường hợp không có mạng internet nhé!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openEnvelope() {
+            const envelope = document.getElementById('envelope');
+            const envelopeWrapper = document.getElementById('envelope-wrapper');
+            const mainCard = document.getElementById('main-card');
+            
+            // 1. Thêm class mở nắp phong bì
+            envelope.classList.add('open');
+            
+            // 2. Chờ hiệu ứng rút thư xong (khoảng 1.5s), sau đó mờ phong bì và hiện thiệp chính
+            setTimeout(() => {
+                envelopeWrapper.style.opacity = '0';
+                setTimeout(() => {
+                    envelopeWrapper.style.display = 'none';
+                    // Cho phép cuộn trang
+                    document.body.classList.add('opened');
+                    // Hiện thiệp chính
+                    mainCard.classList.add('visible');
+                    
+                    // Cuộn mượt lên trên cùng
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }, 1000); // Đợi opacity transition
+            }, 1800); // Đợi envelope animation (0.4 delay + 1.2 duration = 1.6s + buffer)
+        }
+    </script>
+</body>
+
+    <!-- KHUNG POPUP PHÓNG TO ẢNH (THÊM MỚI) -->
+    <div id="image-modal" class="fixed inset-0 z-[100] hidden bg-black/90 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeModal()">
+        <span class="absolute top-4 right-6 text-white text-4xl font-bold cursor-pointer hover:text-vintage-accent transition-colors">&times;</span>
+        <img id="modal-img" src="" class="max-w-full max-h-full object-contain rounded-md shadow-2xl transform scale-95 transition-transform duration-300">
+        <div class="absolute bottom-6 text-white/80 text-sm font-playfair tracking-wider pointer-events-none">Click bất kỳ đâu để đóng</div>
+    </div>
+
+    <script>
+        // Các hàm mở/đóng popup ảnh
+        function openModal(src) {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            modalImg.src = src;
+            
+            modal.classList.remove('hidden');
+            // Timeout nhỏ để CSS transition hoạt động mượt mà
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalImg.classList.remove('scale-95');
+                modalImg.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            const modalImg = document.getElementById('modal-img');
+            
+            modal.classList.add('opacity-0');
+            modalImg.classList.remove('scale-100');
+            modalImg.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+    <!-- KẾT THÚC PHẦN POPUP -->
+</html>
