@@ -177,26 +177,45 @@
 
         .floral-corner {
             position: absolute;
+            /* 1. Thu nhỏ kích thước lại một chút (từ 150px xuống 105px) */
             width: 150px;
             height: 150px;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%23e6c8c4"><path d="M50 0 Q60 40 100 50 Q60 60 50 100 Q40 60 0 50 Q40 40 50 0 Z"/></svg>');
             background-size: cover;
             opacity: 0.5;
             pointer-events: none;
+            z-index: 5;
+        }
+        
+        /* 2. Đẩy sát vào góc hơn và áp dụng hiệu ứng nhấp nháy (sparkle) */
+        .top-left { 
+            top: -28px; 
+            left: -28px; 
+            animation: sparkle-tl 3.5s ease-in-out infinite; 
+        }
+
+        .bottom-right { 
+            bottom: -28px; 
+            right: -28px; 
+            animation: sparkle-br 3.5s ease-in-out infinite 1.5s; /* Delay 1.5s để nháy lệch pha tự nhiên */
+        }
+
+        /* 3. Keyframes nhấp nháy kết hợp giữ nguyên góc xoay chuẩn của 2 góc */
+        @keyframes sparkle-tl {
+            0%, 100% { opacity: 0.25; transform: rotate(-45deg) scale(0.85); }
+            50% { opacity: 0.85; transform: rotate(-35deg) scale(1.1); }
+        }
+
+        @keyframes sparkle-br {
+            0%, 100% { opacity: 0.25; transform: rotate(135deg) scale(0.85); }
+            50% { opacity: 0.85; transform: rotate(145deg) scale(1.1); }
         }
         
         .top-left { top: -20px; left: -20px; transform: rotate(-45deg); }
         .bottom-right { bottom: -20px; right: -20px; transform: rotate(135deg); }
 
         /* Khung ảnh răng cưa vintage */
-        /* .photo-frame {
-            background: #fff;
-            padding: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            position: relative;
-        } */
-        /* Khung ảnh răng cưa */
-        /* Lớp vỏ ngoài để tạo bóng mờ cho toàn bộ khung răng cưa */
+
         .photo-frame-wrapper {
              position: relative;
              display: inline-block;
@@ -204,8 +223,7 @@
              margin-top: 15px; /* Để ghim có khoảng trống ở trên */
         }
 
-        /* Khung ảnh răng cưa chuẩn hiệu ứng tem thư */
-/* Lớp vỏ ngoài cùng (chứa ảnh và kẹp ghim) */
+        /* Lớp vỏ ngoài cùng (chứa ảnh và kẹp ghim) */
         .photo-frame-wrapper {
             position: relative;
             display: inline-block;
@@ -376,7 +394,7 @@
                         <div class="photo-frame-vintage">
                             <!-- Lớp viền mỏng bên trong -->
                             <div class="photo-inner-border">
-                                <img src="IMG_4050.JPG" alt="Graduate Portrait" class="w-full h-auto object-cover rounded-[1px]">
+                                <img src="IMG_4071.JPG" alt="Graduate Portrait" class="w-full h-auto object-cover rounded-[1px]">
                             </div>
                         </div>
                         <!-- Chiếc kẹp ghim -->
